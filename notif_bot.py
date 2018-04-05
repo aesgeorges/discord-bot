@@ -1,6 +1,7 @@
 from twitch import TwitchClient
 import discord
 import asyncio
+import json
 
 CLIENT_ID = 'n9fj9vtnet647vjx7upm31ftwvu335'
 FRVMED_ID = '192336272'
@@ -39,9 +40,11 @@ async def on_message(message):
         return
     if message.content.startswith('!hello'):
         msg = 'Wasup hot boi {0.author.mention}'.format(message)
+        print ('command !hello prompted')
         await discordClient.send_message(message.channel, msg)
     if message.content.startswith('!bye'):
         msg = 'See ya! {0.author.mention}'.format(message)
+        print ('commande !bye prompted')
         await discordClient.send_message(message.channel, msg)
 
 async def stream_check():
@@ -54,10 +57,13 @@ async def stream_check():
         print (status)
         if streaming == False:
             if status is not None:
-                msg = channel.display_name + ' is streaming! yay!'
+                this = client.streams.get_stream_by_user(FRVMED_ID)
+                game = this.game
+                url = channel.url
+                msg = channel.display_name + ' is streaming ' + game + '. Join him! \n' + url
                 streaming = True
                 print ('client started stream')
-                await discordClient.send_message(discordClient.get_channel('430546424296505345'), msg)
+                await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)
             else:
                 print ('not streaming')
         if streaming == True:
@@ -65,7 +71,7 @@ async def stream_check():
                 msg = channel.display_name + ' stopped streaming, see ya next time.'
                 streaming = False
                 print ('client stopped stream.')
-                await discordClient.send_message(discordClient.get_channel('430546424296505345'), msg)
+                await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)
         await asyncio.sleep(5)
 
 discordClient.loop.create_task(stream_check())

@@ -2,10 +2,11 @@ from twitch import TwitchClient
 import discord
 import asyncio
 import json
+import os
 
-CLIENT_ID = 'n9fj9vtnet647vjx7upm31ftwvu335'
-FRVMED_ID = '192336272'
-TOKEN = 'NDMwNTQ1MDk5NTcxNTkzMjM2.DaR0eA.b_05RLFLSw24iHsL64ei5pIIToA'
+CLIENT_ID = os.environ.get('CLIENT_ID')
+FRVMED_ID = os.environ.get('FRVMED_ID')
+TOKEN = os.environ.get('TOKEN')
 
 #192336272 framed
 #55039613 Arms dude

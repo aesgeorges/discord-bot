@@ -74,7 +74,7 @@ async def stream_check():
             if streaming == True:
                 if status is None:
                     channel = client.channels.get_by_id(streamer)
-                    msg = channel.display_name + ' stopped streaming, see ya next time.'
+#                    msg = channel.display_name + ' stopped streaming, see ya next time.'
                     streaming = False
                     print ('client stopped stream.')
                     await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)

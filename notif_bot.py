@@ -5,7 +5,7 @@ import json
 import os
 
 CLIENT_ID = os.environ.get('CLIENT_ID')
-FRVMED_ID = os.environ.get('FRVMED_ID')
+PLAYER_ID = [os.environ.get('FRVMED_ID'), os.environ.get('FEROCT_ID')]
 TOKEN = os.environ.get('TOKEN')
 
 #192336272 framed
@@ -17,11 +17,12 @@ discordClient = discord.Client()
 
 # TWITCH
 client = TwitchClient(client_id=CLIENT_ID)
-channel = client.channels.get_by_id(FRVMED_ID)
 
 # checking stream
-def stream():
-    streamStatus = client.streams.get_stream_by_user(FRVMED_ID)
+def stream(streamer):
+    channel = client.channels.get_by_id(streamer)
+    streamStatus = client.streams.get_stream_by_user(streamer)
+    print (streamStatus)
     if streamStatus is not None:
         notif = channel.display_name
         return notif
@@ -52,28 +53,32 @@ async def stream_check():
     await discordClient.wait_until_ready()
     streaming = False
     while not discordClient.is_closed:
-        print ('checking stream...')
-        stream()
-        status = stream()
-        print (status)
-        if streaming == False:
-            if status is not None:
-                this = client.streams.get_stream_by_user(FRVMED_ID)
-                game = this.game
-                url = channel.url
-                msg = channel.display_name + ' is streaming ' + game + '. Join him! \n' + url
-                streaming = True
-                print ('client started stream')
-                await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)
-            else:
-                print ('not streaming')
-        if streaming == True:
-            if status is None:
-                msg = channel.display_name + ' stopped streaming, see ya next time.'
-                streaming = False
-                print ('client stopped stream.')
-                await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)
-        await asyncio.sleep(5)
+        for streamer in PLAYER_ID:
+            print(streamer)
+            print ('checking stream...')
+            stream(streamer)
+            status = stream(streamer)
+            print (status)
+            if streaming == False:
+                if status is not None:
+                    channel = client.channels.get_by_id(streamer)
+                    this = client.streams.get_stream_by_user(streamer)
+                    game = this.game
+                    url = channel.url
+                    msg = channel.display_name + ' is streaming ' + game + '. Join him! \n' + url
+                    streaming = True
+                    print ('client started stream')
+                    await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)
+                else:
+                    print ('not streaming')
+            if streaming == True:
+                if status is None:
+                    channel = client.channels.get_by_id(streamer)
+                    msg = channel.display_name + ' stopped streaming, see ya next time.'
+                    streaming = False
+                    print ('client stopped stream.')
+                    await discordClient.send_message(discordClient.get_channel('405195595955961863'), msg)
+            await asyncio.sleep(5)
 
 discordClient.loop.create_task(stream_check())
 discordClient.run(TOKEN)

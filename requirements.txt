@@ -7,7 +7,7 @@ discord.py==0.16.12
 idna==2.6
 multidict==4.1.0
 python-twitch-client==0.5.1
-requests==2.18.4
+requests==2.20.0
 six==1.11.0
 urllib3==1.22
 websockets==3.4
